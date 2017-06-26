@@ -8,6 +8,11 @@
             android:title="Caja" />
 
         <item
+            android:id="@+id/nav_download_tarifario"
+            android:icon="@drawable/ic_menu_download"
+            android:title="Importar tarifario" />
+
+        <item
             android:id="@+id/nav_manage"
             android:icon="@drawable/ic_menu_manage"
             android:title="Ajustes" />
