@@ -1,0 +1,31 @@
+<?xml version="1.0" encoding="utf-8"?>
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content"
+    android:padding="5dp">
+
+    <CheckBox
+        android:id="@+id/cbRow"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_centerVertical="true"
+        android:layout_marginEnd="10dp" />
+
+    <TextView
+        android:id="@+id/tvRowDescripcion"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:textSize="22sp"
+        android:text="Marlboro Gold 100's"
+        android:layout_alignParentTop="true"
+        android:layout_toEndOf="@+id/cbRow" />
+
+    <TextView
+        android:id="@+id/tvRowCodigo"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_alignStart="@+id/tvRowDescripcion"
+        android:layout_below="@+id/tvRowDescripcion"
+        android:textSize="20sp"
+        android:text="8965326" />
+</RelativeLayout>

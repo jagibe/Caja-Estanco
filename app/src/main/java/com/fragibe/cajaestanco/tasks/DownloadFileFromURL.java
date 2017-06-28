@@ -51,7 +51,6 @@ public class DownloadFileFromURL extends AsyncTask<String, String, String> {
 
             // Output stream to write file
             OutputStream output = new FileOutputStream(params[1]);
-
             byte data[] = new byte[1024];
 
             long total = 0;

@@ -2,17 +2,23 @@ package com.fragibe.cajaestanco.fragments;
 
 import android.app.Activity;
 import android.app.Fragment;
+import android.content.Context;
 import android.os.Bundle;
 import android.support.v7.widget.CardView;
+import android.support.v7.widget.LinearLayoutManager;
+import android.support.v7.widget.RecyclerView;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.ImageView;
 import android.widget.LinearLayout;
 import android.widget.ProgressBar;
 import android.widget.TextView;
 import android.widget.Toast;
 
 import com.fragibe.cajaestanco.R;
+import com.fragibe.cajaestanco.adapters.ArticuloLogistaAdapter;
+import com.fragibe.cajaestanco.data.Articulo;
 import com.fragibe.cajaestanco.tasks.AsyncTaskChanged;
 import com.fragibe.cajaestanco.tasks.DownloadFileFromURL;
 
@@ -22,6 +28,7 @@ import java.io.FileInputStream;
 import java.io.FileNotFoundException;
 import java.io.IOException;
 import java.io.InputStreamReader;
+import java.util.ArrayList;
 
 public class ImportTarifarioFragment extends Fragment {
 
@@ -31,19 +38,30 @@ public class ImportTarifarioFragment extends Fragment {
         // Required empty public constructor
     }
 
+    private Context context;
     private View view;
 
     private LinearLayout downloadLayout, downloadingLayout;
     private ProgressBar pbDownloadProgress;
-    private TextView tvDownloadProgress;
+    private TextView tvDownloadProgress, tvDescargando;
     private CardView cvDownload;
+    private ImageView ivDownload;
 
+    private RecyclerView mRecyclerView;
+    private RecyclerView.Adapter mAdapter;
+    private RecyclerView.LayoutManager mLayoutManager;
+
+
+    private ArrayList<Articulo> myDataset;
     private DownloadFileFromURL task;
-    String path;
+    private String path;
+
 
     @Override
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
+
+        myDataset = new ArrayList<>();
 
         task = new DownloadFileFromURL(new AsyncTaskChanged<String>() {
             @Override
@@ -54,19 +72,47 @@ public class ImportTarifarioFragment extends Fragment {
 
             @Override
             public void onTaskComplete(String result) {
-                Toast.makeText(getActivity(), "Descargado!", Toast.LENGTH_SHORT).show();
+                ivDownload.setImageResource(R.drawable.ic_cloud_done);
+                tvDescargando.setText("Leyendo tarifario...");
+                pbDownloadProgress.setIndeterminate(true);
+                tvDownloadProgress.setVisibility(View.INVISIBLE);
                 try {
-                    File fl = new File(path);
-                    FileInputStream fin = new FileInputStream(fl);
+                    File file = new File(path);
+                    FileInputStream fin = new FileInputStream(file);
+                    BufferedReader reader = new BufferedReader(new InputStreamReader(fin, "UTF8"));
 
-                    BufferedReader reader = new BufferedReader(new InputStreamReader(fin));
-                    StringBuilder sb = new StringBuilder();
                     String line;
+                    line = reader.readLine(); // Descartar primera linea
                     while ((line = reader.readLine()) != null) {
-                        sb.append(line);
+                        line = line.replaceAll("[^A-Za-z0-9 ;',]", "");
+                        if (!line.equals("")) {
+                            //System.out.println(line);
+                            String[] rowData = line.split(";");
+                            int cod = Integer.parseInt(rowData[0]);
+                            String descr = rowData[1];
+                            int lote_min = Integer.parseInt(rowData[2]);
+                            String um = rowData[3];
+                            Double precio1, precio2;
+                            try {
+                                precio1 = Double.parseDouble(rowData[4]);
+                            } catch (Exception e) {
+                                precio1 = -1.0;
+                            }
+                            try {
+                                precio2 = Double.parseDouble(rowData[5]);
+                            } catch (Exception e) {
+                                precio2 = -1.0;
+                            }
+                            myDataset.add(new Articulo(cod,
+                                    descr,
+                                    lote_min,
+                                    um,
+                                    precio1,
+                                    precio2));
+                            mAdapter.notifyDataSetChanged();
+                        }
                     }
                     reader.close();
-                    //tvFile.setText(sb.toString());
                 } catch (FileNotFoundException e) {
                     e.printStackTrace();
                     Toast.makeText(getActivity(), "¡No se encontró el archivo descargado!", Toast.LENGTH_SHORT).show();
@@ -82,7 +128,6 @@ public class ImportTarifarioFragment extends Fragment {
                 Toast.makeText(getActivity(), "La descarga falló!", Toast.LENGTH_SHORT).show();
             }
         });
-
     }
 
     @Override
@@ -95,7 +140,8 @@ public class ImportTarifarioFragment extends Fragment {
         downloadingLayout = view.findViewById(R.id.layoutDownloading);
         pbDownloadProgress = view.findViewById(R.id.pbTarifarioProgress);
         tvDownloadProgress = view.findViewById(R.id.tvTarifarioProgress);
-
+        tvDescargando = view.findViewById(R.id.tvDescargando);
+        ivDownload = view.findViewById(R.id.ivDownload);
         cvDownload = view.findViewById(R.id.cvDownload);
         cvDownload.setOnClickListener(new View.OnClickListener() {
             @Override
@@ -106,11 +152,26 @@ public class ImportTarifarioFragment extends Fragment {
             }
         });
 
+        mRecyclerView = view.findViewById(R.id.rvArticulosLogista);
+        // use this setting to improve performance if you know that changes
+        // in content do not change the layout size of the RecyclerView
+        mRecyclerView.setHasFixedSize(true);
+
+        // use a linear layout manager
+        mLayoutManager = new LinearLayoutManager(context);
+        mRecyclerView.setLayoutManager(mLayoutManager);
+
+        myDataset.add(new Articulo(8956, "Marlboro Gold", 10, "Cajetilla", 4.95, 5.1));
+        // specify an adapter (see also next example)
+        mAdapter = new ArticuloLogistaAdapter(myDataset);
+        mRecyclerView.setAdapter(mAdapter);
+
         return view;
     }
 
     @Override
     public void onAttach(Activity a) {
+        context = a;
         super.onAttach(a);
         path = a.getCacheDir().getAbsolutePath() + File.separator + "CatalogoLogista.csv";
         /*if (a instanceof OnFragmentInteractionListener) {
