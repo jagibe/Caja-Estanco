@@ -18,10 +18,11 @@ import android.view.View;
 
 import com.fragibe.cajaestanco.R;
 import com.fragibe.cajaestanco.fragments.CajaFragment;
+import com.fragibe.cajaestanco.fragments.EditarArticulosFragment;
 import com.fragibe.cajaestanco.fragments.ImportTarifarioFragment;
 
 public class MainActivity extends AppCompatActivity
-        implements NavigationView.OnNavigationItemSelectedListener {
+        implements NavigationView.OnNavigationItemSelectedListener, EditarArticulosFragment.OnEditarArticulosInteractionListener {
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -54,6 +55,11 @@ public class MainActivity extends AppCompatActivity
         DrawerLayout drawer = (DrawerLayout) findViewById(R.id.drawer_layout);
         if (drawer.isDrawerOpen(GravityCompat.START)) {
             drawer.closeDrawer(GravityCompat.START);
+        }
+        if (getSupportFragmentManager().findFragmentByTag("EditarArticulosFragment") != null) {
+            // I'm viewing EditarArticulosFragment
+            getSupportFragmentManager().popBackStack("EditarArticulos_TAG",
+                    FragmentManager.POP_BACK_STACK_INCLUSIVE);
         } else {
             super.onBackPressed();
         }
@@ -89,11 +95,8 @@ public class MainActivity extends AppCompatActivity
 
         if (id == R.id.nav_caja) {
             replaceFragment(new CajaFragment());
-        } else if (id == R.id.nav_download_tarifario) {
-            replaceFragment(new ImportTarifarioFragment());
-
-        } else if (id == R.id.nav_manage) {
-
+        } else if (id == R.id.nav_editar_articulos) {
+            replaceFragment(new EditarArticulosFragment());
         } else if (id == R.id.nav_share) {
 
         } else if (id == R.id.nav_send) {
@@ -108,7 +111,19 @@ public class MainActivity extends AppCompatActivity
     private void replaceFragment(Fragment newFragment) {
         FragmentManager fragmentManager = getFragmentManager();
         FragmentTransaction ft = fragmentManager.beginTransaction();
-        ft.replace(R.id.frame_container, newFragment);
+        ft.replace(R.id.frame_container, newFragment, "EditarArticulosFragment");
+        ft.addToBackStack("EditarArticulos_TAG");
         ft.commit();
+    }
+
+    @Override
+    public void onEditarArticulosButtonPressed(int id) {
+        if (id == R.id.cvImportar) {
+            replaceFragment(new ImportTarifarioFragment());
+        } else if (id == R.id.cvAnyadir) {
+
+        } else if (id == R.id.cvEditar) {
+
+        }
     }
 }

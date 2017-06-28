@@ -6,18 +6,16 @@
             android:id="@+id/nav_caja"
             android:icon="@drawable/ic_menu_caja"
             android:title="Caja" />
-
-        <item
-            android:id="@+id/nav_download_tarifario"
-            android:icon="@drawable/ic_menu_download"
-            android:title="Importar tarifario" />
-
-        <item
-            android:id="@+id/nav_manage"
-            android:icon="@drawable/ic_menu_manage"
-            android:title="Ajustes" />
-
     </group>
+
+    <item android:title="Configuración">
+        <menu>
+            <item
+                android:id="@+id/nav_editar_articulos"
+                android:icon="@drawable/ic_menu_manage"
+                android:title="Editar Artículos" />
+        </menu>
+    </item>
 
     <item android:title="Otros">
         <menu>
