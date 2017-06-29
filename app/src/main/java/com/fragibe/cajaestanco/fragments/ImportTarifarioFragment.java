@@ -3,6 +3,7 @@ package com.fragibe.cajaestanco.fragments;
 import android.app.Activity;
 import android.app.Fragment;
 import android.content.Context;
+import android.os.AsyncTask;
 import android.os.Bundle;
 import android.support.v7.widget.CardView;
 import android.support.v7.widget.LinearLayoutManager;
@@ -24,6 +25,7 @@ import com.fragibe.cajaestanco.adapters.ArticuloLogistaAdapter;
 import com.fragibe.cajaestanco.data.Articulo;
 import com.fragibe.cajaestanco.tasks.AsyncTaskChanged;
 import com.fragibe.cajaestanco.tasks.DownloadFileFromURL;
+import com.fragibe.cajaestanco.tasks.ReadTarifario;
 
 import java.io.BufferedReader;
 import java.io.File;
@@ -68,6 +70,28 @@ public class ImportTarifarioFragment extends Fragment {
 
         myDataset = new ArrayList<>();
 
+        final ReadTarifario read = new ReadTarifario(new AsyncTaskChanged<Integer>() {
+            @Override
+            public void onTaskProgressUpdate(Integer progress) {
+            }
+
+            @Override
+            public void onTaskComplete(Integer result) {
+                mAdapter.notifyDataSetChanged();
+                cvDownload.setVisibility(View.GONE);
+            }
+
+            @Override
+            public void onTaskFailed(Integer result) {
+
+            }
+
+            @Override
+            public Integer doInBackground() {
+                return readTarifario();
+            }
+        });
+
         task = new DownloadFileFromURL(new AsyncTaskChanged<String>() {
             @Override
             public void onTaskProgressUpdate(String progress) {
@@ -81,58 +105,20 @@ public class ImportTarifarioFragment extends Fragment {
                 tvDescargando.setText("Leyendo tarifario...");
                 pbDownloadProgress.setIndeterminate(true);
                 tvDownloadProgress.setVisibility(View.INVISIBLE);
-                try {
-                    File file = new File(path);
-                    FileInputStream fin = new FileInputStream(file);
-                    BufferedReader reader = new BufferedReader(new InputStreamReader(fin, "UTF8"));
 
-                    String line;
-                    line = reader.readLine(); // Descartar primera linea
-                    while ((line = reader.readLine()) != null) {
-                        line = line.replaceAll("[^A-Za-z0-9 ;',]", "");
-                        if (!line.equals("")) {
-                            //System.out.println(line);
-                            String[] rowData = line.split(";");
-                            int cod = Integer.parseInt(rowData[0]);
-                            String descr = rowData[1];
-                            int lote_min = Integer.parseInt(rowData[2]);
-                            String um = rowData[3];
-                            Double precio1, precio2;
-                            try {
-                                precio1 = Double.parseDouble(rowData[4]);
-                            } catch (Exception e) {
-                                precio1 = -1.0;
-                            }
-                            try {
-                                precio2 = Double.parseDouble(rowData[5]);
-                            } catch (Exception e) {
-                                precio2 = -1.0;
-                            }
-                            myDataset.add(new Articulo(cod,
-                                    descr,
-                                    lote_min,
-                                    um,
-                                    precio1,
-                                    precio2));
-                            mAdapter.notifyDataSetChanged();
-                        }
-                    }
-                    reader.close();
-                    cvDownload.setVisibility(View.GONE);
-                } catch (FileNotFoundException e) {
-                    e.printStackTrace();
-                    Toast.makeText(getActivity(), "¡No se encontró el archivo descargado!", Toast.LENGTH_SHORT).show();
-                } catch (IOException e) {
-                    e.printStackTrace();
-                    Toast.makeText(getActivity(), "IOException!", Toast.LENGTH_SHORT).show();
-                }
-
+                read.execute();
             }
 
             @Override
             public void onTaskFailed(String result) {
                 Toast.makeText(getActivity(), "La descarga falló!", Toast.LENGTH_SHORT).show();
             }
+
+            @Override
+            public String doInBackground() {
+                return null;
+            }
+
         });
     }
 
@@ -152,9 +138,11 @@ public class ImportTarifarioFragment extends Fragment {
         cvDownload.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                downloadLayout.setVisibility(View.GONE);
-                downloadingLayout.setVisibility(View.VISIBLE);
-                task.execute("http://www.logista.es/es/Paginas/CatalogoCompleto.aspx", path);
+                if (task.getStatus() != AsyncTask.Status.RUNNING) {
+                    downloadLayout.setVisibility(View.GONE);
+                    downloadingLayout.setVisibility(View.VISIBLE);
+                    task.execute("http://www.logista.es/es/Paginas/CatalogoCompleto.aspx", path);
+                }
             }
         });
 
@@ -162,7 +150,6 @@ public class ImportTarifarioFragment extends Fragment {
         etFilterDescripcion.addTextChangedListener(new TextWatcher() {
             @Override
             public void beforeTextChanged(CharSequence charSequence, int i, int i1, int i2) {
-
             }
 
             @Override
@@ -172,7 +159,6 @@ public class ImportTarifarioFragment extends Fragment {
 
             @Override
             public void afterTextChanged(Editable editable) {
-
             }
         });
 
@@ -212,4 +198,52 @@ public class ImportTarifarioFragment extends Fragment {
         //mListener = null;
     }
 
+    private Integer readTarifario() {
+        try {
+            File file = new File(path);
+            FileInputStream fin = new FileInputStream(file);
+            BufferedReader reader = new BufferedReader(new InputStreamReader(fin, "UTF8"));
+
+            String line;
+            line = reader.readLine(); // Descartar primera linea
+            while ((line = reader.readLine()) != null) {
+                line = line.replaceAll("[^A-Za-z0-9 ;',]", "");
+                if (!line.equals("")) {
+                    //System.out.println(line);
+                    String[] rowData = line.split(";");
+                    int cod = Integer.parseInt(rowData[0]);
+                    String descr = rowData[1];
+                    int lote_min = Integer.parseInt(rowData[2]);
+                    String um = rowData[3];
+                    Double precio1, precio2;
+                    try {
+                        precio1 = Double.parseDouble(rowData[4]);
+                    } catch (Exception e) {
+                        precio1 = -1.0;
+                    }
+                    try {
+                        precio2 = Double.parseDouble(rowData[5]);
+                    } catch (Exception e) {
+                        precio2 = -1.0;
+                    }
+                    myDataset.add(new Articulo(cod,
+                            descr,
+                            lote_min,
+                            um,
+                            precio1,
+                            precio2));
+                }
+            }
+            reader.close();
+            return 0;
+        } catch (FileNotFoundException e) {
+            e.printStackTrace();
+            Toast.makeText(getActivity(), "¡No se encontró el archivo descargado!", Toast.LENGTH_SHORT).show();
+            return -1;
+        } catch (IOException e) {
+            e.printStackTrace();
+            Toast.makeText(getActivity(), "IOException!", Toast.LENGTH_SHORT).show();
+            return -2;
+        }
+    }
 }

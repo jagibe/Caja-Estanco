@@ -16,5 +16,6 @@ public class ArticuloContract {
         public static final String UM = "um";
         public static final String PRECIO1 = "precio1";
         public static final String PRECIO2 = "precio2";
+        public static final String CATEGORIA = "categoria";
     }
 }

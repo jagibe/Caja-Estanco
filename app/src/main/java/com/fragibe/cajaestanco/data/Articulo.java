@@ -17,6 +17,7 @@ public class Articulo {
     private double precio1;
     private double precio2;
     private boolean selected;
+    private String categoria;
 
     public Articulo(int codigo, String descripcion, int lote_min, String um, double precio1, double precio2) {
         this.codigo = codigo;
@@ -26,6 +27,17 @@ public class Articulo {
         this.precio1 = precio1;
         this.precio2 = precio2;
         this.selected = false;
+    }
+
+    public Articulo(int codigo, String descripcion, int lote_min, String um, double precio1, double precio2, String categoria) {
+        this.codigo = codigo;
+        this.descripcion = descripcion;
+        this.lote_min = lote_min;
+        this.um = um;
+        this.precio1 = precio1;
+        this.precio2 = precio2;
+        this.selected = false;
+        this.categoria = categoria;
     }
 
     public int getCodigo() {
@@ -84,6 +96,13 @@ public class Articulo {
         this.selected = selected;
     }
 
+    public String getCategoria() {
+        return categoria;
+    }
+
+    public void setCategoria(String categoria) {
+        this.categoria = categoria;
+    }
 
     public ContentValues toContentValues() {
         ContentValues values = new ContentValues();
@@ -97,4 +116,5 @@ public class Articulo {
 
         return values;
     }
+
 }

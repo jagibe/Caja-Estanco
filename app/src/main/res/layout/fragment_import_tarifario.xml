@@ -6,6 +6,7 @@
     tools:context="com.fragibe.cajaestanco.fragments.ImportTarifarioFragment">
 
     <LinearLayout
+        android:id="@+id/fragment_import_tarifario"
         android:layout_width="match_parent"
         android:layout_height="match_parent"
         android:layout_marginBottom="8dp"

@@ -93,6 +93,7 @@ public class DownloadFileFromURL extends AsyncTask<String, String, String> {
      **/
     @Override
     protected void onPostExecute(String result) {
+
         if (result == null) {
             callback.onTaskFailed(result);
         } else {

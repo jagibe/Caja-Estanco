@@ -10,4 +10,6 @@ public interface AsyncTaskChanged<T> {
     public void onTaskComplete(T result);
 
     public void onTaskFailed(T result);
+
+    public T doInBackground();
 }
