@@ -23,8 +23,9 @@
             android:id="@+id/cvDownload"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:foreground="?android:attr/selectableItemBackground"
-            android:clickable="true">
+            android:layout_marginBottom="10dp"
+            android:clickable="true"
+            android:foreground="@drawable/my_ripple">
 
             <LinearLayout
                 android:layout_width="match_parent"
@@ -36,16 +37,16 @@
                     android:id="@+id/ivDownload"
                     android:layout_width="60dp"
                     android:layout_height="60dp"
-                    app:srcCompat="@drawable/ic_cloud_download"
-                    android:layout_marginEnd="10dp" />
+                    android:layout_marginEnd="10dp"
+                    app:srcCompat="@drawable/ic_cloud_download" />
 
                 <LinearLayout
                     android:id="@+id/layoutDownload"
                     android:layout_width="0dp"
                     android:layout_height="match_parent"
-                    android:orientation="vertical"
-                    android:gravity="center_vertical"
                     android:layout_weight="1"
+                    android:gravity="center_vertical"
+                    android:orientation="vertical"
                     android:padding="10dp">
 
                     <TextView
@@ -85,12 +86,75 @@
             </LinearLayout>
         </android.support.v7.widget.CardView>
 
-        <!-- A RecyclerView with some commonly used attributes -->
-        <android.support.v7.widget.RecyclerView
-            android:id="@+id/rvArticulosLogista"
-            android:scrollbars="vertical"
+        <LinearLayout
             android:layout_width="match_parent"
-            android:layout_height="match_parent" />
+            android:layout_height="match_parent"
+            android:orientation="horizontal">
+
+            <android.support.v7.widget.CardView
+                android:layout_width="match_parent"
+                android:layout_height="match_parent"
+                android:layout_marginEnd="5dp"
+                android:layout_weight="1">
+
+                <android.support.v7.widget.RecyclerView
+                    android:id="@+id/rvArticulosLogista"
+                    android:layout_width="match_parent"
+                    android:layout_height="match_parent"
+                    android:scrollbars="vertical" />
+            </android.support.v7.widget.CardView>
+
+            <android.support.v7.widget.CardView
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginStart="5dp"
+                android:layout_weight="1">
+
+                <LinearLayout
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:orientation="vertical"
+                    android:padding="5dp">
+
+                    <LinearLayout
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:layout_margin="5dp">
+
+                        <TextView
+                            android:id="@+id/tvFilterCode"
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:text="Código:" />
+
+                        <EditText
+                            android:id="@+id/etFilterCode"
+                            android:layout_width="match_parent"
+                            android:layout_height="wrap_content"
+                            android:layout_toRightOf="@+id/tvFilterCode" />
+                    </LinearLayout>
+
+                    <LinearLayout
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:layout_margin="5dp">
+
+                        <TextView
+                            android:id="@+id/tvFilterDescripcion"
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:text="Descripción:" />
+
+                        <EditText
+                            android:id="@+id/etFilterDescripcion"
+                            android:layout_width="match_parent"
+                            android:layout_height="wrap_content"
+                            android:layout_toRightOf="@+id/tvFilterDescripcion" />
+                    </LinearLayout>
+                </LinearLayout>
+            </android.support.v7.widget.CardView>
+
+        </LinearLayout>
     </LinearLayout>
 
 

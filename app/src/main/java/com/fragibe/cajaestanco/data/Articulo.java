@@ -16,6 +16,7 @@ public class Articulo {
     private String um;
     private double precio1;
     private double precio2;
+    private boolean selected;
 
     public Articulo(int codigo, String descripcion, int lote_min, String um, double precio1, double precio2) {
         this.codigo = codigo;
@@ -24,6 +25,7 @@ public class Articulo {
         this.um = um;
         this.precio1 = precio1;
         this.precio2 = precio2;
+        this.selected = false;
     }
 
     public int getCodigo() {
@@ -73,6 +75,15 @@ public class Articulo {
     public void setPrecio2(double precio2) {
         this.precio2 = precio2;
     }
+
+    public boolean isSelected() {
+        return this.selected;
+    }
+
+    public void setSelected(boolean selected) {
+        this.selected = selected;
+    }
+
 
     public ContentValues toContentValues() {
         ContentValues values = new ContentValues();

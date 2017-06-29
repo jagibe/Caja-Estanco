@@ -7,9 +7,12 @@ import android.os.Bundle;
 import android.support.v7.widget.CardView;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
+import android.text.Editable;
+import android.text.TextWatcher;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.EditText;
 import android.widget.ImageView;
 import android.widget.LinearLayout;
 import android.widget.ProgressBar;
@@ -46,6 +49,8 @@ public class ImportTarifarioFragment extends Fragment {
     private TextView tvDownloadProgress, tvDescargando;
     private CardView cvDownload;
     private ImageView ivDownload;
+
+    private EditText etFilterDescripcion;
 
     private RecyclerView mRecyclerView;
     private RecyclerView.Adapter mAdapter;
@@ -113,6 +118,7 @@ public class ImportTarifarioFragment extends Fragment {
                         }
                     }
                     reader.close();
+                    cvDownload.setVisibility(View.GONE);
                 } catch (FileNotFoundException e) {
                     e.printStackTrace();
                     Toast.makeText(getActivity(), "¡No se encontró el archivo descargado!", Toast.LENGTH_SHORT).show();
@@ -152,6 +158,24 @@ public class ImportTarifarioFragment extends Fragment {
             }
         });
 
+        etFilterDescripcion = view.findViewById(R.id.etFilterDescripcion);
+        etFilterDescripcion.addTextChangedListener(new TextWatcher() {
+            @Override
+            public void beforeTextChanged(CharSequence charSequence, int i, int i1, int i2) {
+
+            }
+
+            @Override
+            public void onTextChanged(CharSequence charSequence, int i, int i1, int i2) {
+                ((ArticuloLogistaAdapter) mAdapter).getFilter().filter(charSequence);
+            }
+
+            @Override
+            public void afterTextChanged(Editable editable) {
+
+            }
+        });
+
         mRecyclerView = view.findViewById(R.id.rvArticulosLogista);
         // use this setting to improve performance if you know that changes
         // in content do not change the layout size of the RecyclerView
@@ -161,7 +185,7 @@ public class ImportTarifarioFragment extends Fragment {
         mLayoutManager = new LinearLayoutManager(context);
         mRecyclerView.setLayoutManager(mLayoutManager);
 
-        myDataset.add(new Articulo(8956, "Marlboro Gold", 10, "Cajetilla", 4.95, 5.1));
+        // myDataset.add(new Articulo(8956, "Marlboro Gold", 10, "Cajetilla", 4.95, 5.1));
         // specify an adapter (see also next example)
         mAdapter = new ArticuloLogistaAdapter(myDataset);
         mRecyclerView.setAdapter(mAdapter);
