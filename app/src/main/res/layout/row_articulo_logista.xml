@@ -15,10 +15,10 @@
         android:id="@+id/tvRowDescripcion"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:textSize="22sp"
-        android:text="Marlboro Gold 100's"
         android:layout_alignParentTop="true"
-        android:layout_toEndOf="@+id/cbRow" />
+        android:layout_toEndOf="@+id/cbRow"
+        android:text=""
+        android:textSize="22sp" />
 
     <TextView
         android:id="@+id/tvRowCodigo"
@@ -26,6 +26,6 @@
         android:layout_height="wrap_content"
         android:layout_alignStart="@+id/tvRowDescripcion"
         android:layout_below="@+id/tvRowDescripcion"
-        android:textSize="20sp"
-        android:text="8965326" />
+        android:text=""
+        android:textSize="20sp" />
 </RelativeLayout>
