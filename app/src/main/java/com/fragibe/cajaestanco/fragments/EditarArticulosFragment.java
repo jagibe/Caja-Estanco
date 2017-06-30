@@ -14,7 +14,7 @@ public class EditarArticulosFragment extends Fragment {
 
     private OnEditarArticulosInteractionListener mListener;
 
-    private CardView cvDownload, cvAdd, cvEdit;
+    private CardView cvImportar, cvAnyadir, cvEditar;
 
     public EditarArticulosFragment() {
         // Required empty public constructor
@@ -25,17 +25,22 @@ public class EditarArticulosFragment extends Fragment {
                              Bundle savedInstanceState) {
         // Inflate the layout for this fragment
         View v = inflater.inflate(R.layout.fragment_editar_articulos, container, false);
-        cvDownload = v.findViewById(R.id.cvImportar);
-        cvAdd = v.findViewById(R.id.cvAnyadir);
-        cvEdit = v.findViewById(R.id.cvEditar);
+        cvImportar = v.findViewById(R.id.cvImportar);
+        cvAnyadir = v.findViewById(R.id.cvAnyadir);
+        cvEditar = v.findViewById(R.id.cvEditar);
 
-        cvDownload.setOnClickListener(new View.OnClickListener() {
+        View.OnClickListener listener = new View.OnClickListener() {
             @Override
             public void onClick(View view) {
                 if (mListener != null)
                     mListener.onEditarArticulosButtonPressed(view.getId());
             }
-        });
+        };
+
+        cvImportar.setOnClickListener(listener);
+        cvAnyadir.setOnClickListener(listener);
+        cvEditar.setOnClickListener(listener);
+
 
         return v;
     }

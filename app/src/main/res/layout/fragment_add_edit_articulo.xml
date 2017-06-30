@@ -1,0 +1,118 @@
+<FrameLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    tools:context="com.fragibe.cajaestanco.fragments.AddEditArticuloFragment"
+    android:padding="10dp">
+
+    <android.support.v7.widget.CardView
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content">
+
+        <GridLayout xmlns:android="http://schemas.android.com/apk/res/android"
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:alignmentMode="alignBounds"
+            android:columnCount="11"
+            android:columnOrderPreserved="true"
+            android:useDefaultMargins="true"
+            android:padding="5dp">
+
+            <TextView
+                android:layout_column="0"
+                android:layout_gravity="right"
+                android:layout_row="0"
+                android:text="Código:" />
+
+            <EditText
+                android:id="@+id/etAddEditCodigo"
+                android:layout_column="1"
+                android:layout_row="0"
+                android:ems="10" />
+
+            <Space
+                android:layout_width="200dp"
+                android:layout_column="2"
+                android:layout_columnSpan="5"
+                android:layout_gravity="fill"
+                android:layout_row="0" />
+
+            <TextView
+                android:layout_column="8"
+                android:layout_gravity="right"
+                android:layout_row="0"
+                android:text="Descripcion:" />
+
+            <EditText
+                android:id="@+id/etAddEditDescripcion"
+                android:layout_column="9"
+                android:layout_row="0"
+                android:ems="10" />
+
+
+            <TextView
+                android:layout_column="0"
+                android:layout_gravity="right"
+                android:layout_row="1"
+                android:text="Lote mín:" />
+
+            <EditText
+                android:id="@+id/etAddEditLoteMin"
+                android:layout_column="1"
+                android:layout_row="1"
+                android:inputType="number"
+                android:ems="8" />
+
+            <TextView
+                android:layout_row="1"
+                android:layout_column="8"
+                android:layout_gravity="right"
+                android:text="Um:" />
+
+            <EditText
+                android:id="@+id/etAddEditUm"
+                android:layout_column="9"
+                android:layout_row="1"
+                android:ems="10" />
+
+
+            <TextView
+                android:layout_row="2"
+                android:layout_column="0"
+                android:layout_gravity="right"
+                android:text="Precio Canal 1:" />
+
+            <EditText
+                android:id="@+id/etAddEditPrecio1"
+                android:layout_row="2"
+                android:layout_column="1"
+                android:ems="10" />
+
+            <TextView
+                android:layout_row="2"
+                android:layout_column="8"
+                android:layout_gravity="right"
+                android:text="Precio Canal 2:" />
+
+            <EditText
+                android:id="@+id/etAddEditPrecio2"
+                android:layout_row="2"
+                android:layout_column="9"
+                android:ems="10" />
+
+            <TextView
+                android:layout_row="3"
+                android:layout_column="0"
+                android:layout_gravity="right"
+                android:text="Categoría" />
+
+            <EditText
+                android:id="@+id/spnCategoria"
+                android:layout_row="3"
+                android:layout_column="1"
+                android:ems="10" />
+
+
+        </GridLayout>
+    </android.support.v7.widget.CardView>
+</FrameLayout>

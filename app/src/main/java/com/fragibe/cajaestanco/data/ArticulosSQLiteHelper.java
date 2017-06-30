@@ -29,6 +29,7 @@ public class ArticulosSQLiteHelper extends SQLiteOpenHelper {
                 ArticuloEntry.UM + " TEXT," +
                 ArticuloEntry.PRECIO1 + " REAL," +
                 ArticuloEntry.PRECIO2 + " REAL," +
+                ArticuloEntry.CATEGORIA + " TEXT," +
                 "UNIQUE(codigo))";
 
         sqLiteDatabase.execSQL(sql);

@@ -17,6 +17,7 @@ import android.view.MenuItem;
 import android.view.View;
 
 import com.fragibe.cajaestanco.R;
+import com.fragibe.cajaestanco.fragments.AddEditArticuloFragment;
 import com.fragibe.cajaestanco.fragments.CajaFragment;
 import com.fragibe.cajaestanco.fragments.EditarArticulosFragment;
 import com.fragibe.cajaestanco.fragments.ImportTarifarioFragment;
@@ -55,8 +56,7 @@ public class MainActivity extends AppCompatActivity
         DrawerLayout drawer = (DrawerLayout) findViewById(R.id.drawer_layout);
         if (drawer.isDrawerOpen(GravityCompat.START)) {
             drawer.closeDrawer(GravityCompat.START);
-        }
-        if (getSupportFragmentManager().findFragmentByTag("EditarArticulosFragment") != null) {
+        } else if (getSupportFragmentManager().findFragmentByTag("EditarArticulosFragment") != null) {
             // I'm viewing EditarArticulosFragment
             getSupportFragmentManager().popBackStack("EditarArticulos_TAG",
                     FragmentManager.POP_BACK_STACK_INCLUSIVE);
@@ -121,7 +121,7 @@ public class MainActivity extends AppCompatActivity
         if (id == R.id.cvImportar) {
             replaceFragment(new ImportTarifarioFragment());
         } else if (id == R.id.cvAnyadir) {
-
+            replaceFragment(new AddEditArticuloFragment());
         } else if (id == R.id.cvEditar) {
 
         }
