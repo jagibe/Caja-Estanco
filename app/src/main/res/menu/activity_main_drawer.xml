@@ -8,8 +8,13 @@
             android:title="Caja" />
     </group>
 
-    <item android:title="Configuración">
+    <item android:title="Artículos">
         <menu>
+            <item
+                android:id="@+id/nav_importar_tarifario"
+                android:icon="@drawable/ic_download"
+                android:title="Importar desde www.logista.es" />
+
             <item
                 android:id="@+id/nav_editar_articulos"
                 android:icon="@drawable/ic_menu_manage"

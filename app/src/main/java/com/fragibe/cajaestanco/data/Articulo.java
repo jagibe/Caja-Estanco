@@ -19,6 +19,9 @@ public class Articulo {
     private boolean selected;
     private String categoria;
 
+    public Articulo() {
+    }
+
     public Articulo(int codigo, String descripcion, int lote_min, String um, double precio1, double precio2) {
         this.codigo = codigo;
         this.descripcion = descripcion;

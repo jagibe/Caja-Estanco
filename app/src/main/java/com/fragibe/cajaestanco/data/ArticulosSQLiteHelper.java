@@ -1,22 +1,30 @@
 package com.fragibe.cajaestanco.data;
 
 import android.content.Context;
+import android.database.Cursor;
 import android.database.sqlite.SQLiteDatabase;
 import android.database.sqlite.SQLiteOpenHelper;
 import android.provider.BaseColumns;
 
 import com.fragibe.cajaestanco.data.ArticuloContract.ArticuloEntry;
 
+import java.util.ArrayList;
+
 /**
  * Created by Javier on 25/06/2017.
  */
 
 public class ArticulosSQLiteHelper extends SQLiteOpenHelper {
-    public static final int DATABASE_VERSION = 1;
-    public static final String DATABASE_NAME = "Articulos.db";
+
+    private static final int DATABASE_VERSION = 1;
+    private static final String DATABASE_NAME = "Articulos.db";
+    private SQLiteDatabase db;
+
+    private Context context;
 
     public ArticulosSQLiteHelper(Context context, SQLiteDatabase.CursorFactory factory) {
         super(context, DATABASE_NAME, factory, DATABASE_VERSION);
+        this.context = context;
     }
 
     @Override
@@ -44,7 +52,7 @@ public class ArticulosSQLiteHelper extends SQLiteOpenHelper {
         onCreate(sqLiteDatabase);
     }
 
-    private void mockData(SQLiteDatabase sqLiteDatabase) {
+    public void mockData(SQLiteDatabase sqLiteDatabase) {
         mockArticulo(sqLiteDatabase, new Articulo(17492, "DUCADOS RUBIO 100'S BY JPS", 10, "Cajetilla", 4.2, 4.35));
         mockArticulo(sqLiteDatabase, new Articulo(2886, "MARLBORO GOLD DURO", 10, "Cajetilla", 4.95, 5.1));
         mockArticulo(sqLiteDatabase, new Articulo(2884, "MARLBORO RED DURO", 10, "Cajetilla", 4.95, 5.1));
@@ -58,13 +66,65 @@ public class ArticulosSQLiteHelper extends SQLiteOpenHelper {
                 articulo.toContentValues());
     }
 
-    public long saveArticulo(Articulo articulo) {
+    public boolean saveArticulo(Articulo... articulos) {
         SQLiteDatabase sqLiteDatabase = getWritableDatabase();
 
-        return sqLiteDatabase.insert(
+        boolean ret = true;
+
+        for (Articulo articulo : articulos) {
+            ret = ret && (sqLiteDatabase.insert(ArticuloEntry.TABLE_NAME, null, articulo.toContentValues()) > 0);
+        }
+
+        sqLiteDatabase.close();
+
+        return ret;
+    }
+
+    public Cursor getArticuloByCodigo(int codigo) {
+        Cursor c = getReadableDatabase().query(
                 ArticuloEntry.TABLE_NAME,
                 null,
-                articulo.toContentValues());
+                ArticuloEntry.CODIGO + " = ?",
+                new String[]{codigo + ""},
+                null,
+                null,
+                null);
 
+        return c;
+    }
+
+    public ArrayList<Articulo> getAllArticulos() {
+        ArrayList<Articulo> list = new ArrayList<>();
+
+        Cursor cursor = getReadableDatabase()
+                .query(ArticuloEntry.TABLE_NAME,
+                        null,
+                        null,
+                        null,
+                        null,
+                        null,
+                        null);
+
+        if (cursor.moveToFirst()) {
+            while (!cursor.isAfterLast()) {
+                String codigo = cursor.getString(cursor.getColumnIndexOrThrow(ArticuloEntry.CODIGO));
+                String descripcion = cursor.getString(cursor.getColumnIndexOrThrow(ArticuloEntry.DESCRIPCION));
+                String lote_min = cursor.getString(cursor.getColumnIndexOrThrow(ArticuloEntry.LOTE_MIN));
+                String um = cursor.getString(cursor.getColumnIndexOrThrow(ArticuloEntry.UM));
+                String precio1 = cursor.getString(cursor.getColumnIndexOrThrow(ArticuloEntry.PRECIO1));
+                String precio2 = cursor.getString(cursor.getColumnIndexOrThrow(ArticuloEntry.PRECIO2));
+                String categoria = cursor.getString(cursor.getColumnIndexOrThrow(ArticuloEntry.CATEGORIA));
+
+                list.add(new Articulo(Integer.parseInt(codigo), descripcion, Integer.parseInt(lote_min), um, Double.parseDouble(precio1), Double.parseDouble(precio2), categoria));
+                cursor.moveToNext();
+            }
+        }
+
+        return list;
+    }
+
+    public int clearArticulos() {
+        SQLiteDatabase db = this.getWritableDatabase();
+        return db.delete(ArticuloEntry.TABLE_NAME, "1", null);
     }
 }

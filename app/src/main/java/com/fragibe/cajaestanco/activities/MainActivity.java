@@ -3,6 +3,7 @@ package com.fragibe.cajaestanco.activities;
 import android.app.Fragment;
 import android.app.FragmentManager;
 import android.app.FragmentTransaction;
+import android.content.Context;
 import android.os.Bundle;
 import android.support.design.widget.FloatingActionButton;
 import android.support.design.widget.NavigationView;
@@ -15,24 +16,25 @@ import android.support.v7.widget.Toolbar;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
+import android.view.inputmethod.InputMethodManager;
 
 import com.fragibe.cajaestanco.R;
-import com.fragibe.cajaestanco.fragments.AddEditArticuloFragment;
 import com.fragibe.cajaestanco.fragments.CajaFragment;
 import com.fragibe.cajaestanco.fragments.EditarArticulosFragment;
 import com.fragibe.cajaestanco.fragments.ImportTarifarioFragment;
 
 public class MainActivity extends AppCompatActivity
-        implements NavigationView.OnNavigationItemSelectedListener, EditarArticulosFragment.OnEditarArticulosInteractionListener {
+        implements NavigationView.OnNavigationItemSelectedListener {
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
+
         setContentView(R.layout.activity_main);
         Toolbar toolbar = (Toolbar) findViewById(R.id.toolbar);
         setSupportActionBar(toolbar);
 
-        FloatingActionButton fab = (FloatingActionButton) findViewById(R.id.fab);
+        FloatingActionButton fab = (FloatingActionButton) findViewById(R.id.fabSearch);
         fab.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
@@ -95,6 +97,8 @@ public class MainActivity extends AppCompatActivity
 
         if (id == R.id.nav_caja) {
             replaceFragment(new CajaFragment());
+        } else if (id == R.id.nav_importar_tarifario) {
+            replaceFragment(new ImportTarifarioFragment());
         } else if (id == R.id.nav_editar_articulos) {
             replaceFragment(new EditarArticulosFragment());
         } else if (id == R.id.nav_share) {
@@ -108,7 +112,7 @@ public class MainActivity extends AppCompatActivity
         return true;
     }
 
-    private void replaceFragment(Fragment newFragment) {
+    public void replaceFragment(Fragment newFragment) {
         FragmentManager fragmentManager = getFragmentManager();
         FragmentTransaction ft = fragmentManager.beginTransaction();
         ft.replace(R.id.frame_container, newFragment, "EditarArticulosFragment");
@@ -116,14 +120,12 @@ public class MainActivity extends AppCompatActivity
         ft.commit();
     }
 
-    @Override
-    public void onEditarArticulosButtonPressed(int id) {
-        if (id == R.id.cvImportar) {
-            replaceFragment(new ImportTarifarioFragment());
-        } else if (id == R.id.cvAnyadir) {
-            replaceFragment(new AddEditArticuloFragment());
-        } else if (id == R.id.cvEditar) {
-
+    public void closeKeyboard() {
+        // Check if no view has focus:
+        View view = this.getCurrentFocus();
+        if (view != null) {
+            InputMethodManager imm = (InputMethodManager) getSystemService(Context.INPUT_METHOD_SERVICE);
+            imm.hideSoftInputFromWindow(view.getWindowToken(), 0);
         }
     }
 }
