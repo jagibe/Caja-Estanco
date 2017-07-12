@@ -2,9 +2,9 @@ package com.fragibe.cajaestanco.fragments;
 
 import android.app.Activity;
 import android.app.Fragment;
-import android.content.Context;
 import android.os.AsyncTask;
 import android.os.Bundle;
+import android.support.design.widget.FloatingActionButton;
 import android.support.v7.widget.CardView;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
@@ -21,8 +21,10 @@ import android.widget.TextView;
 import android.widget.Toast;
 
 import com.fragibe.cajaestanco.R;
+import com.fragibe.cajaestanco.activities.MainActivity;
 import com.fragibe.cajaestanco.adapters.ArticuloLogistaAdapter;
 import com.fragibe.cajaestanco.data.Articulo;
+import com.fragibe.cajaestanco.data.ArticulosSQLiteHelper;
 import com.fragibe.cajaestanco.tasks.AsyncTaskChanged;
 import com.fragibe.cajaestanco.tasks.DownloadFileFromURL;
 import com.fragibe.cajaestanco.tasks.ReadTarifario;
@@ -43,7 +45,7 @@ public class ImportTarifarioFragment extends Fragment {
         // Required empty public constructor
     }
 
-    private Context context;
+    private MainActivity main;
     private View view;
 
     private LinearLayout downloadLayout, downloadingLayout;
@@ -51,6 +53,7 @@ public class ImportTarifarioFragment extends Fragment {
     private TextView tvDownloadProgress, tvDescargando;
     private CardView cvDownload;
     private ImageView ivDownload;
+    private FloatingActionButton fabImport;
 
     private EditText etFilterDescripcion;
 
@@ -79,6 +82,7 @@ public class ImportTarifarioFragment extends Fragment {
             public void onTaskComplete(Integer result) {
                 mAdapter.notifyDataSetChanged();
                 cvDownload.setVisibility(View.GONE);
+                fabImport.show();
             }
 
             @Override
@@ -168,7 +172,7 @@ public class ImportTarifarioFragment extends Fragment {
         mRecyclerView.setHasFixedSize(true);
 
         // use a linear layout manager
-        mLayoutManager = new LinearLayoutManager(context);
+        mLayoutManager = new LinearLayoutManager(main);
         mRecyclerView.setLayoutManager(mLayoutManager);
 
         // myDataset.add(new Articulo(8956, "Marlboro Gold", 10, "Cajetilla", 4.95, 5.1));
@@ -176,20 +180,29 @@ public class ImportTarifarioFragment extends Fragment {
         mAdapter = new ArticuloLogistaAdapter(myDataset);
         mRecyclerView.setAdapter(mAdapter);
 
+
+        fabImport = view.findViewById(R.id.fabImport);
+        fabImport.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                ArticulosSQLiteHelper aslh = new ArticulosSQLiteHelper(main, null);
+
+                ArrayList<Articulo> selected = new ArrayList<>();
+                for (Articulo articulo : myDataset)
+                    if (articulo.isSelected())
+                        selected.add(articulo);
+
+                aslh.saveArticulo(selected);
+            }
+        });
         return view;
     }
 
     @Override
     public void onAttach(Activity a) {
-        context = a;
-        super.onAttach(a);
+        main = (MainActivity) a;
         path = a.getCacheDir().getAbsolutePath() + File.separator + "CatalogoLogista.csv";
-        /*if (a instanceof OnFragmentInteractionListener) {
-            mListener = (OnFragmentInteractionListener) a;
-        } else {
-            throw new RuntimeException(a.toString()
-                    + " must implement OnFragmentInteractionListener");
-        }*/
+        super.onAttach(a);
     }
 
     @Override

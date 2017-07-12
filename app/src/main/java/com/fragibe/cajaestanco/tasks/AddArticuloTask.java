@@ -22,7 +22,7 @@ public class AddArticuloTask extends AsyncTask<Articulo, Void, Boolean> {
         boolean ret = true;
 
         for (Articulo art : articulos)
-            ret = ret && (mArticulosDbHelper.saveArticulo(art) > 0);
+            ret = ret && mArticulosDbHelper.saveArticulo(art);
 
         return ret;
     }

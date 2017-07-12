@@ -26,6 +26,8 @@ import com.fragibe.cajaestanco.fragments.ImportTarifarioFragment;
 public class MainActivity extends AppCompatActivity
         implements NavigationView.OnNavigationItemSelectedListener {
 
+    private NavigationView navigationView;
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -49,7 +51,13 @@ public class MainActivity extends AppCompatActivity
         drawer.setDrawerListener(toggle);
         toggle.syncState();
 
-        NavigationView navigationView = (NavigationView) findViewById(R.id.nav_view);
+        navigationView = (NavigationView) findViewById(R.id.nav_view);
+        navigationView.getMenu().getItem(0).setChecked(true);
+        FragmentManager fragmentManager = getFragmentManager();
+        FragmentTransaction ft = fragmentManager.beginTransaction();
+        ft.replace(R.id.frame_container, new CajaFragment(), "EditarArticulosFragment");
+        //ft.addToBackStack("EditarArticulos_TAG");
+        ft.commit();
         navigationView.setNavigationItemSelectedListener(this);
     }
 
@@ -97,10 +105,16 @@ public class MainActivity extends AppCompatActivity
 
         if (id == R.id.nav_caja) {
             replaceFragment(new CajaFragment());
+            deselectNavigationDrawer();
+            navigationView.getMenu().getItem(0).setChecked(true);
         } else if (id == R.id.nav_importar_tarifario) {
             replaceFragment(new ImportTarifarioFragment());
+            deselectNavigationDrawer();
+            navigationView.getMenu().getItem(1).getSubMenu().getItem(0).setChecked(true);
         } else if (id == R.id.nav_editar_articulos) {
             replaceFragment(new EditarArticulosFragment());
+            deselectNavigationDrawer();
+            navigationView.getMenu().getItem(1).getSubMenu().getItem(1).setChecked(true);
         } else if (id == R.id.nav_share) {
 
         } else if (id == R.id.nav_send) {
@@ -118,6 +132,18 @@ public class MainActivity extends AppCompatActivity
         ft.replace(R.id.frame_container, newFragment, "EditarArticulosFragment");
         ft.addToBackStack("EditarArticulos_TAG");
         ft.commit();
+    }
+
+    public void deselectNavigationDrawer() {
+        Menu menu = navigationView.getMenu();
+        for (int i = 0; i < menu.size(); i++) {
+            navigationView.getMenu().getItem(i).setChecked(false);
+            Menu submenu = menu.getItem(i).getSubMenu();
+            if (submenu != null)
+                for (int j = 0; j < submenu.size(); j++) {
+                    submenu.getItem(j).setChecked(false);
+                }
+        }
     }
 
     public void closeKeyboard() {

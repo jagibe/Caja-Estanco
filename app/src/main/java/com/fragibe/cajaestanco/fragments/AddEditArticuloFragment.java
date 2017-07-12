@@ -3,6 +3,7 @@ package com.fragibe.cajaestanco.fragments;
 import android.app.Activity;
 import android.app.Fragment;
 import android.os.Bundle;
+import android.support.design.widget.TextInputLayout;
 import android.view.LayoutInflater;
 import android.view.Menu;
 import android.view.MenuInflater;
@@ -29,6 +30,7 @@ public class AddEditArticuloFragment extends Fragment {
 
     /* Controles de la UI */
     private EditText etCodigo, etDescripcion, etLoteMin, etUm, etPrecio1, etPrecio2;
+    private TextInputLayout tilCodigo, tilDescripcion, tilLoteMin, tilUm, tilPrecio1, tilPrecio2;
     private Spinner spnCategoria;
 
     public AddEditArticuloFragment() {
@@ -88,6 +90,14 @@ public class AddEditArticuloFragment extends Fragment {
         etUm = v.findViewById(R.id.etAddEditUm);
         etPrecio1 = v.findViewById(R.id.etAddEditPrecio1);
         etPrecio2 = v.findViewById(R.id.etAddEditPrecio2);
+
+        tilCodigo = v.findViewById(R.id.tilAddEditCodigo);
+        tilDescripcion = v.findViewById(R.id.tilAddEditDescripcion);
+        tilLoteMin = v.findViewById(R.id.tilAddEditLoteMin);
+        tilUm = v.findViewById(R.id.tilAddEditUm);
+        tilPrecio1 = v.findViewById(R.id.tilAddEditPrecio1);
+        tilPrecio2 = v.findViewById(R.id.tilAddEditPrecio2);
+
         spnCategoria = v.findViewById(R.id.spnCategoria);
 
         return v;
@@ -125,7 +135,7 @@ public class AddEditArticuloFragment extends Fragment {
         boolean ret = true;
 
         if (etCodigo.getText().toString().trim().equals("")) {
-            etCodigo.setError("Debe rellenar este campo");
+            tilCodigo.setError("Debe rellenar este campo");
             ret = false;
         } else {
             try {
@@ -137,47 +147,47 @@ public class AddEditArticuloFragment extends Fragment {
         }
 
         if (etDescripcion.getText().toString().trim().equals("")) {
-            etDescripcion.setError("Debe rellenar este campo");
+            tilDescripcion.setError("Debe rellenar este campo");
             ret = false;
         }
 
         if (etLoteMin.getText().toString().trim().equals("")) {
-            etLoteMin.setError("Debe rellenar este campo");
+            tilLoteMin.setError("Debe rellenar este campo");
             ret = false;
         } else {
             try {
                 Integer.parseInt(etLoteMin.getText().toString());
             } catch (NumberFormatException e) {
-                etLoteMin.setError("Formato incorrecto");
+                tilLoteMin.setError("Formato incorrecto");
                 ret = false;
             }
         }
 
         if (etUm.getText().toString().trim().equals("")) {
-            etUm.setError("Debe rellenar este campo");
+            tilUm.setError("Debe rellenar este campo");
             ret = false;
         }
 
         if (etPrecio1.getText().toString().trim().equals("")) {
-            etPrecio1.setError("Debe rellenar este campo");
+            tilPrecio1.setError("Debe rellenar este campo");
             ret = false;
         } else {
             try {
                 Double.parseDouble(etPrecio1.getText().toString());
             } catch (NumberFormatException e) {
-                etPrecio1.setError("Formato incorrecto");
+                tilPrecio1.setError("Formato incorrecto");
                 ret = false;
             }
         }
 
         if (etPrecio2.getText().toString().trim().equals("")) {
-            etPrecio2.setError("Debe rellenar este campo");
+            tilPrecio2.setError("Debe rellenar este campo");
             ret = false;
         } else {
             try {
                 Double.parseDouble(etPrecio2.getText().toString());
             } catch (NumberFormatException e) {
-                etPrecio2.setError("Formato incorrecto");
+                tilPrecio2.setError("Formato incorrecto");
                 ret = false;
             }
         }

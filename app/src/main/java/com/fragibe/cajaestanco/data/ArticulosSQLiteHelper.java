@@ -80,6 +80,20 @@ public class ArticulosSQLiteHelper extends SQLiteOpenHelper {
         return ret;
     }
 
+    public boolean saveArticulo(ArrayList<Articulo> articulos) {
+        SQLiteDatabase sqLiteDatabase = getWritableDatabase();
+
+        boolean ret = true;
+
+        for (Articulo articulo : articulos) {
+            ret = ret && (sqLiteDatabase.insert(ArticuloEntry.TABLE_NAME, null, articulo.toContentValues()) > 0);
+        }
+
+        sqLiteDatabase.close();
+
+        return ret;
+    }
+
     public Cursor getArticuloByCodigo(int codigo) {
         Cursor c = getReadableDatabase().query(
                 ArticuloEntry.TABLE_NAME,
@@ -103,7 +117,7 @@ public class ArticulosSQLiteHelper extends SQLiteOpenHelper {
                         null,
                         null,
                         null,
-                        null);
+                        ArticuloEntry.DESCRIPCION + " ASC");
 
         if (cursor.moveToFirst()) {
             while (!cursor.isAfterLast()) {
@@ -120,6 +134,7 @@ public class ArticulosSQLiteHelper extends SQLiteOpenHelper {
             }
         }
 
+        cursor.close();
         return list;
     }
 

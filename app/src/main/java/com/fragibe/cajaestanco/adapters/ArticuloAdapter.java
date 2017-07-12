@@ -4,7 +4,6 @@ import android.support.v7.widget.RecyclerView;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
-import android.widget.CheckBox;
 import android.widget.Filter;
 import android.widget.Filterable;
 import android.widget.TextView;
@@ -38,13 +37,13 @@ public class ArticuloAdapter extends RecyclerView.Adapter<ArticuloAdapter.ViewHo
         // each data item is just a string in this case
         public TextView tvDescripcion;
         public TextView tvCodigo;
-        public CheckBox cbRow;
+        //public CheckBox cbRow;
 
         public ViewHolder(View v) {
             super(v);
             tvDescripcion = v.findViewById(R.id.tvRowDescripcion);
             tvCodigo = v.findViewById(R.id.tvRowCodigo);
-            cbRow = v.findViewById(R.id.cbRow);
+            // cbRow = v.findViewById(R.id.cbRow);
         }
     }
 
@@ -68,7 +67,6 @@ public class ArticuloAdapter extends RecyclerView.Adapter<ArticuloAdapter.ViewHo
     // Replace the contents of a view (invoked by the layout manager)
     @Override
     public void onBindViewHolder(final ViewHolder holder, int position) {
-        // - get element from your dataset at this position
         final Articulo e = filteredDataset.get(position);
 
         // - replace the contents of the view with that element
@@ -77,6 +75,7 @@ public class ArticuloAdapter extends RecyclerView.Adapter<ArticuloAdapter.ViewHo
         holder.tvCodigo.setText(cod);
 
         /*holder.itemView.setBackgroundColor(e.isSelected() ? Color.LTGRAY : Color.WHITE);
+        // - get element from your dataset at this position
         holder.cbRow.setChecked(e.isSelected());
         holder.cbRow.setOnClickListener(new View.OnClickListener() {
             @Override
@@ -145,6 +144,7 @@ public class ArticuloAdapter extends RecyclerView.Adapter<ArticuloAdapter.ViewHo
             notifyDataSetChanged();
         }
     }
+
 
 }
 

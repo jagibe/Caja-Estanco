@@ -13,6 +13,7 @@ import android.view.MenuInflater;
 import android.view.MenuItem;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.Toast;
 
 import com.fragibe.cajaestanco.R;
 import com.fragibe.cajaestanco.activities.MainActivity;
@@ -21,6 +22,8 @@ import com.fragibe.cajaestanco.data.Articulo;
 import com.fragibe.cajaestanco.data.ArticulosSQLiteHelper;
 
 import java.util.ArrayList;
+import java.util.Collections;
+import java.util.Comparator;
 
 public class EditarArticulosFragment extends Fragment {
     private FloatingActionButton fabAddArticle;
@@ -63,13 +66,13 @@ public class EditarArticulosFragment extends Fragment {
 
         // specify an adapter
         myDataset = aslh.getAllArticulos();
+        // sortArticulos(myDataset);
         mAdapter = new ArticuloAdapter(myDataset);
         mRecyclerView.setAdapter(mAdapter);
 
         // From AddEditArticuloFragment, reload Articulos
         if (mAlreadyLoaded)
             loadArticulos();
-
 
         return v;
     }
@@ -78,7 +81,17 @@ public class EditarArticulosFragment extends Fragment {
     public void loadArticulos() {
         myDataset.clear();
         myDataset.addAll(aslh.getAllArticulos());
+        // sortArticulos(myDataset);
         mAdapter.notifyDataSetChanged();
+    }
+
+    private void sortArticulos(ArrayList<Articulo> list) {
+        Collections.sort(list, new Comparator<Articulo>() {
+            @Override
+            public int compare(Articulo articulo1, Articulo articulo2) {
+                return articulo1.getDescripcion().compareTo(articulo2.getDescripcion());
+            }
+        });
     }
 
     @Override
@@ -116,6 +129,10 @@ public class EditarArticulosFragment extends Fragment {
         } else if (id == R.id.action_add_mock_data) {
             aslh.mockData(aslh.getWritableDatabase());
             loadArticulos();
+            return true;
+        } else if (id == R.id.action_refresh) {
+            loadArticulos();
+            Toast.makeText(main, "Actualizado", Toast.LENGTH_SHORT).show();
             return true;
         }
 
