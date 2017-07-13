@@ -5,6 +5,7 @@ import android.app.FragmentManager;
 import android.app.FragmentTransaction;
 import android.content.Context;
 import android.os.Bundle;
+import android.support.annotation.NonNull;
 import android.support.design.widget.FloatingActionButton;
 import android.support.design.widget.NavigationView;
 import android.support.design.widget.Snackbar;
@@ -52,13 +53,10 @@ public class MainActivity extends AppCompatActivity
         toggle.syncState();
 
         navigationView = (NavigationView) findViewById(R.id.nav_view);
-        navigationView.getMenu().getItem(0).setChecked(true);
-        FragmentManager fragmentManager = getFragmentManager();
-        FragmentTransaction ft = fragmentManager.beginTransaction();
-        ft.replace(R.id.frame_container, new CajaFragment(), "EditarArticulosFragment");
-        //ft.addToBackStack("EditarArticulos_TAG");
-        ft.commit();
         navigationView.setNavigationItemSelectedListener(this);
+
+        // Cargar Fragment Caja sin apilar en la pila atras
+        replaceFragment(new CajaFragment(), false);
     }
 
     @Override
@@ -99,22 +97,16 @@ public class MainActivity extends AppCompatActivity
 
     @SuppressWarnings("StatementWithEmptyBody")
     @Override
-    public boolean onNavigationItemSelected(MenuItem item) {
+    public boolean onNavigationItemSelected(@NonNull MenuItem item) {
         // Handle navigation view item clicks here.
         int id = item.getItemId();
 
         if (id == R.id.nav_caja) {
-            replaceFragment(new CajaFragment());
-            deselectNavigationDrawer();
-            navigationView.getMenu().getItem(0).setChecked(true);
+            replaceFragment(new CajaFragment(), true);
         } else if (id == R.id.nav_importar_tarifario) {
-            replaceFragment(new ImportTarifarioFragment());
-            deselectNavigationDrawer();
-            navigationView.getMenu().getItem(1).getSubMenu().getItem(0).setChecked(true);
+            replaceFragment(new ImportTarifarioFragment(), true);
         } else if (id == R.id.nav_editar_articulos) {
-            replaceFragment(new EditarArticulosFragment());
-            deselectNavigationDrawer();
-            navigationView.getMenu().getItem(1).getSubMenu().getItem(1).setChecked(true);
+            replaceFragment(new EditarArticulosFragment(), true);
         } else if (id == R.id.nav_share) {
 
         } else if (id == R.id.nav_send) {
@@ -126,12 +118,33 @@ public class MainActivity extends AppCompatActivity
         return true;
     }
 
-    public void replaceFragment(Fragment newFragment) {
+    public void replaceFragment(Fragment newFragment, boolean addToBackStack) {
         FragmentManager fragmentManager = getFragmentManager();
         FragmentTransaction ft = fragmentManager.beginTransaction();
-        ft.replace(R.id.frame_container, newFragment, "EditarArticulosFragment");
-        ft.addToBackStack("EditarArticulos_TAG");
+        ft.replace(R.id.frame_container, newFragment, "stack");
+
+        if (addToBackStack)
+            ft.addToBackStack("stack_TAG");
+
         ft.commit();
+
+        selectNavigationDrawer(newFragment);
+    }
+
+    public void selectNavigationDrawer(Fragment newFragment) {
+        // Marcar elemento de navigationDrawer correspondiente
+        if (newFragment instanceof CajaFragment) {
+            deselectNavigationDrawer();
+            navigationView.getMenu().getItem(0).setChecked(true);
+
+        } else if (newFragment instanceof ImportTarifarioFragment) {
+            deselectNavigationDrawer();
+            navigationView.getMenu().getItem(1).getSubMenu().getItem(0).setChecked(true);
+
+        } else if (newFragment instanceof EditarArticulosFragment) {
+            deselectNavigationDrawer();
+            navigationView.getMenu().getItem(1).getSubMenu().getItem(1).setChecked(true);
+        }
     }
 
     public void deselectNavigationDrawer() {

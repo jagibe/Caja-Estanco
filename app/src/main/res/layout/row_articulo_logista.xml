@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="utf-8"?>
 <RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
     android:layout_width="match_parent"
-    android:layout_height="wrap_content"
+    android:layout_height="120dp"
     android:padding="5dp">
 
     <CheckBox
@@ -9,23 +9,43 @@
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_centerVertical="true"
-        android:layout_marginEnd="10dp" />
+        android:layout_marginEnd="5dp" />
 
+    <ImageView
+        android:id="@+id/ivPreview"
+        android:layout_width="100dp"
+        android:layout_height="100dp"
+        android:layout_margin="10dp"
+        android:layout_toEndOf="@+id/cbRow"
+        android:layout_centerVertical="true" />
     <TextView
         android:id="@+id/tvRowDescripcion"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:layout_alignParentTop="true"
-        android:layout_toEndOf="@+id/cbRow"
-        android:text=""
-        android:textSize="22sp" />
+        android:layout_marginTop="14dp"
+        android:text="Descripcion"
+        android:textSize="22sp"
+        android:layout_alignTop="@+id/ivPreview"
+        android:layout_alignStart="@+id/tvRowCodigo" />
 
     <TextView
         android:id="@+id/tvRowCodigo"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:layout_alignStart="@+id/tvRowDescripcion"
-        android:layout_below="@+id/tvRowDescripcion"
-        android:text=""
-        android:textSize="20sp" />
+        android:layout_marginBottom="14dp"
+        android:text="00000"
+        android:textSize="20sp"
+        android:layout_alignBottom="@+id/ivPreview"
+        android:layout_toEndOf="@+id/ivPreview" />
+
+    <TextView
+        android:id="@+id/tvRowPrecio1"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="0.00 €"
+        android:textSize="20sp"
+        android:layout_marginStart="150dp"
+        android:layout_marginBottom="14dp"
+        android:layout_alignBottom="@+id/ivPreview"
+        android:layout_toEndOf="@+id/ivPreview" />
 </RelativeLayout>

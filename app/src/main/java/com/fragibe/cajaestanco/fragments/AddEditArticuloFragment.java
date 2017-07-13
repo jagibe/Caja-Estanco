@@ -4,6 +4,8 @@ import android.app.Activity;
 import android.app.Fragment;
 import android.os.Bundle;
 import android.support.design.widget.TextInputLayout;
+import android.text.Editable;
+import android.text.TextWatcher;
 import android.view.LayoutInflater;
 import android.view.Menu;
 import android.view.MenuInflater;
@@ -23,7 +25,7 @@ import com.fragibe.cajaestanco.data.ArticulosSQLiteHelper;
 public class AddEditArticuloFragment extends Fragment {
 
     private String codigoIni, descripcionIni, lote_minIni, umIni, precio1Ini, precio2Ini, categoriaIni;
-    private String codigo, descripcion, lote_min, um, precio1, precio2, categoria;
+    /*private String codigo, descripcion, lote_min, um, precio1, precio2, categoria;*/
 
 
     ArticulosSQLiteHelper aslh;
@@ -32,6 +34,8 @@ public class AddEditArticuloFragment extends Fragment {
     private EditText etCodigo, etDescripcion, etLoteMin, etUm, etPrecio1, etPrecio2;
     private TextInputLayout tilCodigo, tilDescripcion, tilLoteMin, tilUm, tilPrecio1, tilPrecio2;
     private Spinner spnCategoria;
+
+    private TextWatcher textListener;
 
     public AddEditArticuloFragment() {
         // Required empty public constructor
@@ -79,17 +83,42 @@ public class AddEditArticuloFragment extends Fragment {
         setHasOptionsMenu(true);
     }
 
+
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
                              Bundle savedInstanceState) {
         // Inflate the layout for this fragment
         View v = inflater.inflate(R.layout.fragment_add_edit_articulo, container, false);
+        codigoIni = descripcionIni = lote_minIni = umIni = precio1Ini = precio2Ini = "";
+        textListener = new TextWatcher() {
+            @Override
+            public void beforeTextChanged(CharSequence charSequence, int i, int i1, int i2) {
+            }
+
+            @Override
+            public void onTextChanged(CharSequence charSequence, int i, int i1, int i2) {
+                getActivity().invalidateOptionsMenu();
+            }
+
+            @Override
+            public void afterTextChanged(Editable editable) {
+            }
+        };
+
+
         etCodigo = v.findViewById(R.id.etAddEditCodigo);
         etDescripcion = v.findViewById(R.id.etAddEditDescripcion);
         etLoteMin = v.findViewById(R.id.etAddEditLoteMin);
         etUm = v.findViewById(R.id.etAddEditUm);
         etPrecio1 = v.findViewById(R.id.etAddEditPrecio1);
         etPrecio2 = v.findViewById(R.id.etAddEditPrecio2);
+
+        etCodigo.addTextChangedListener(textListener);
+        etDescripcion.addTextChangedListener(textListener);
+        etLoteMin.addTextChangedListener(textListener);
+        etUm.addTextChangedListener(textListener);
+        etPrecio1.addTextChangedListener(textListener);
+        etPrecio2.addTextChangedListener(textListener);
 
         tilCodigo = v.findViewById(R.id.tilAddEditCodigo);
         tilDescripcion = v.findViewById(R.id.tilAddEditDescripcion);
@@ -100,6 +129,7 @@ public class AddEditArticuloFragment extends Fragment {
 
         spnCategoria = v.findViewById(R.id.spnCategoria);
 
+        ((MainActivity) getActivity()).selectNavigationDrawer(this);
         return v;
     }
 
@@ -120,6 +150,13 @@ public class AddEditArticuloFragment extends Fragment {
     }
 
     @Override
+    public void onPrepareOptionsMenu(Menu menu) {
+        menu.getItem(1).setVisible(isChanged());
+
+        super.onPrepareOptionsMenu(menu);
+    }
+
+    @Override
     public boolean onOptionsItemSelected(MenuItem item) {
         int id = item.getItemId();
         if (id == R.id.action_save) {
@@ -129,6 +166,27 @@ public class AddEditArticuloFragment extends Fragment {
         }
 
         return super.onOptionsItemSelected(item);
+    }
+
+
+    private boolean isChanged() {
+        if (!etCodigo.getText().toString().equals(codigoIni))
+            return true;
+        if (!etDescripcion.getText().toString().equals(descripcionIni))
+            return true;
+        if (!etLoteMin.getText().toString().equals(lote_minIni))
+            return true;
+        if (!etUm.getText().toString().equals(umIni))
+            return true;
+        if (!etPrecio1.getText().toString().equals(precio1Ini))
+            return true;
+        if (!etPrecio2.getText().toString().equals(precio2Ini))
+            return true;
+
+        // No hay cambios
+        return false;
+
+
     }
 
     private boolean isValid() {
@@ -207,6 +265,7 @@ public class AddEditArticuloFragment extends Fragment {
                 getFragmentManager().popBackStack();
             }
     }
+
 
 }
 

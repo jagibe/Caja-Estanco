@@ -5,6 +5,7 @@ import android.app.Fragment;
 import android.os.AsyncTask;
 import android.os.Bundle;
 import android.support.design.widget.FloatingActionButton;
+import android.support.design.widget.TextInputEditText;
 import android.support.v7.widget.CardView;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
@@ -13,7 +14,6 @@ import android.text.TextWatcher;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
-import android.widget.EditText;
 import android.widget.ImageView;
 import android.widget.LinearLayout;
 import android.widget.ProgressBar;
@@ -55,7 +55,7 @@ public class ImportTarifarioFragment extends Fragment {
     private ImageView ivDownload;
     private FloatingActionButton fabImport;
 
-    private EditText etFilterDescripcion;
+    private TextInputEditText etFilterDescripcion;
 
     private RecyclerView mRecyclerView;
     private RecyclerView.Adapter mAdapter;
@@ -65,6 +65,7 @@ public class ImportTarifarioFragment extends Fragment {
     private ArrayList<Articulo> myDataset;
     private DownloadFileFromURL task;
     private String path;
+    private final String NAME_CSV_FILE = "CatalogoLogista.csv";
 
 
     @Override
@@ -100,7 +101,7 @@ public class ImportTarifarioFragment extends Fragment {
             @Override
             public void onTaskProgressUpdate(String progress) {
                 pbDownloadProgress.setProgress(Integer.parseInt(progress));
-                tvDownloadProgress.setText(progress + " %");
+                tvDownloadProgress.setText(String.format("%s %%", progress));
             }
 
             @Override
@@ -145,7 +146,7 @@ public class ImportTarifarioFragment extends Fragment {
                 if (task.getStatus() != AsyncTask.Status.RUNNING) {
                     downloadLayout.setVisibility(View.GONE);
                     downloadingLayout.setVisibility(View.VISIBLE);
-                    task.execute("http://www.logista.es/es/Paginas/CatalogoCompleto.aspx", path);
+                    task.execute("http://www.logista.es/es/Paginas/CatalogoCompleto.aspx", path + NAME_CSV_FILE);
                 }
             }
         });
@@ -177,7 +178,7 @@ public class ImportTarifarioFragment extends Fragment {
 
         // myDataset.add(new Articulo(8956, "Marlboro Gold", 10, "Cajetilla", 4.95, 5.1));
         // specify an adapter (see also next example)
-        mAdapter = new ArticuloLogistaAdapter(myDataset);
+        mAdapter = new ArticuloLogistaAdapter(myDataset, main);
         mRecyclerView.setAdapter(mAdapter);
 
 
@@ -193,15 +194,19 @@ public class ImportTarifarioFragment extends Fragment {
                         selected.add(articulo);
 
                 aslh.saveArticulo(selected);
+
+                main.replaceFragment(new EditarArticulosFragment(), true);
+
             }
         });
+
         return view;
     }
 
     @Override
     public void onAttach(Activity a) {
         main = (MainActivity) a;
-        path = a.getCacheDir().getAbsolutePath() + File.separator + "CatalogoLogista.csv";
+        path = a.getCacheDir().getAbsolutePath() + File.separator;
         super.onAttach(a);
     }
 
@@ -213,7 +218,7 @@ public class ImportTarifarioFragment extends Fragment {
 
     private Integer readTarifario() {
         try {
-            File file = new File(path);
+            File file = new File(path + NAME_CSV_FILE);
             FileInputStream fin = new FileInputStream(file);
             BufferedReader reader = new BufferedReader(new InputStreamReader(fin, "UTF8"));
 
@@ -230,12 +235,12 @@ public class ImportTarifarioFragment extends Fragment {
                     String um = rowData[3];
                     Double precio1, precio2;
                     try {
-                        precio1 = Double.parseDouble(rowData[4]);
+                        precio1 = Double.parseDouble(rowData[4].replace(",", "."));
                     } catch (Exception e) {
                         precio1 = -1.0;
                     }
                     try {
-                        precio2 = Double.parseDouble(rowData[5]);
+                        precio2 = Double.parseDouble(rowData[5].replace(",", "."));
                     } catch (Exception e) {
                         precio2 = -1.0;
                     }

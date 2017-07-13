@@ -1,5 +1,6 @@
 package com.fragibe.cajaestanco.adapters;
 
+import android.content.Context;
 import android.graphics.Color;
 import android.support.v7.widget.RecyclerView;
 import android.view.LayoutInflater;
@@ -8,6 +9,7 @@ import android.view.ViewGroup;
 import android.widget.CheckBox;
 import android.widget.Filter;
 import android.widget.Filterable;
+import android.widget.ImageView;
 import android.widget.TextView;
 
 import com.fragibe.cajaestanco.R;
@@ -23,6 +25,7 @@ public class ArticuloLogistaAdapter extends RecyclerView.Adapter<ArticuloLogista
     private ArrayList<Articulo> originalDataset;
     private ArrayList<Articulo> filteredDataset;
     private ArticuloFilter mArticlesFilter;
+    private Context context;
 
     @Override
     public Filter getFilter() {
@@ -39,20 +42,25 @@ public class ArticuloLogistaAdapter extends RecyclerView.Adapter<ArticuloLogista
         // each data item is just a string in this case
         public TextView tvDescripcion;
         public TextView tvCodigo;
+        public TextView tvPrecio1;
         public CheckBox cbRow;
+        public ImageView ivPreview;
 
         public ViewHolder(View v) {
             super(v);
             tvDescripcion = v.findViewById(R.id.tvRowDescripcion);
             tvCodigo = v.findViewById(R.id.tvRowCodigo);
+            tvPrecio1 = v.findViewById(R.id.tvRowPrecio1);
             cbRow = v.findViewById(R.id.cbRow);
+            ivPreview = v.findViewById(R.id.ivPreview);
         }
     }
 
     // Provide a suitable constructor (depends on the kind of dataset)
-    public ArticuloLogistaAdapter(ArrayList<Articulo> myDataset) {
+    public ArticuloLogistaAdapter(ArrayList<Articulo> myDataset, Context context) {
         originalDataset = myDataset;
         filteredDataset = myDataset;
+        this.context = context;
     }
 
 
@@ -72,10 +80,21 @@ public class ArticuloLogistaAdapter extends RecyclerView.Adapter<ArticuloLogista
         // - get element from your dataset at this position
         final Articulo e = filteredDataset.get(position);
 
-        // - replace the contents of the view with that element
+
+        // Cargar imagen
+        GlideApp.with(context)
+                .load("http://www.logista.es/Imagenes%20de%20Articulos_200/" + e.getCodigo() + "_200.jpg")
+                .placeholder(R.drawable.ic_add)
+                .into(holder.ivPreview);
+
         holder.tvDescripcion.setText(e.getDescripcion());
         String cod = e.getCodigo() + "";
         holder.tvCodigo.setText(cod);
+        if (e.getPrecio1() != -1.0)
+            holder.tvPrecio1.setText(String.format("%s €", e.getPrecio1()));
+        else
+            holder.tvPrecio1.setText("A consultar");
+
 
         holder.itemView.setBackgroundColor(e.isSelected() ? Color.LTGRAY : Color.WHITE);
         holder.cbRow.setChecked(e.isSelected());
@@ -94,7 +113,6 @@ public class ArticuloLogistaAdapter extends RecyclerView.Adapter<ArticuloLogista
                 holder.itemView.setBackgroundColor(e.isSelected() ? Color.LTGRAY : Color.WHITE);
             }
         });
-
     }
 
     // Return the size of your dataset (invoked by the layout manager)

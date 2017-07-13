@@ -51,7 +51,7 @@ public class EditarArticulosFragment extends Fragment {
         fabAddArticle.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                main.replaceFragment(AddEditArticuloFragment.newInstance(null));
+                main.replaceFragment(AddEditArticuloFragment.newInstance(null), true);
             }
         });
 
@@ -73,6 +73,8 @@ public class EditarArticulosFragment extends Fragment {
         // From AddEditArticuloFragment, reload Articulos
         if (mAlreadyLoaded)
             loadArticulos();
+
+        main.selectNavigationDrawer(this);
 
         return v;
     }
